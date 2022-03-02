@@ -45,8 +45,8 @@ public interface BagInterface<T>{
 	return: T generic
 	input: int index position
 	get the specific entry at the psoiton given in the bag
-	*/
-	public T getEntry(int index);
+	
+	public T getEntry(int index);*/
 
 	/*
 	return: integer

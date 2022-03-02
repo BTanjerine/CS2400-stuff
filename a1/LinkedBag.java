@@ -105,7 +105,7 @@ public class LinkedBag<T> implements BagInterface<T>{
 	return: T generic
 	input: int index position
 	get the specific entry at the psoiton given in the bag
-	*/
+	
 	public T getEntry(int index){
 		Node<T> currentNode = firstNode;			// start with first node
 		for(int i=0; i<index; i++){ 				// loop till we reach the correct node
@@ -113,7 +113,7 @@ public class LinkedBag<T> implements BagInterface<T>{
 		}
 
 		return currentNode.getData();				// return that data
-	}
+	}*/
 
 	/*
 	return: integer
@@ -183,6 +183,16 @@ public class LinkedBag<T> implements BagInterface<T>{
 	public BagInterface<T> union(BagInterface<T> bag1){
 		LinkedBag<T> newBag = new LinkedBag<T>();
 
+		T[] array1 = this.toArray();
+		T[] array2 = bag1.toArray();
+
+		for(int i=0; i<array1.length+array2.length-1; i++){	// loop till all the elements are added into the array
+			if(i < array1.length)				// switch the bag you are adding from based on number of entries for this bag
+				newBag.add(array1[i]);
+			else						// adding items from bag1
+				newBag.add(array2[i]);
+		}
+
 		return newBag;
 	}
 
@@ -194,6 +204,9 @@ public class LinkedBag<T> implements BagInterface<T>{
 	public BagInterface<T> intersection(BagInterface<T> bag1){
 		LinkedBag<T> newBag = new LinkedBag<T>();
 
+		T[] array1 = this.toArray();
+		T[] array2 = bag1.toArray();
+
 		return newBag;
 	}
 
@@ -204,6 +217,9 @@ public class LinkedBag<T> implements BagInterface<T>{
 	*/
 	public BagInterface<T> difference(BagInterface<T> bag1){
 		LinkedBag<T> newBag = new LinkedBag<T>();
+
+		T[] array1 = this.toArray();
+		T[] array2 = bag1.toArray();
 
 		return newBag;
 	}

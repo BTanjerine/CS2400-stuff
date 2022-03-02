@@ -155,10 +155,10 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	return: T generic
 	input: int index position
 	get the specific entry at the psoiton given in the bag
-	*/
+	
 	public T getEntry(int index){
 		return bag[index];
-	}
+	}*/
 
 	/*
 	return: integer
@@ -219,11 +219,14 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	public BagInterface<T> union(BagInterface<T> bag1){
 		ResizeableArrayBag<T> newBag = new ResizeableArrayBag<T>();
 
-		for(int i=0; i<numberOfEntries+bag1.getCurrentSize(); i++){	// loop till all the elements are added into the array
-			if(i < numberOfEntries)					// switch the bag you are adding from based on number of entries for this bag
-				newBag.add(bag[i]);
-			else if(i >= numberOfEntries)				// adding items from bag1
-				newBag.add(bag1.getEntry(i));
+		T[] array1 = this.toArray();
+		T[] array2 = bag1.toArray();
+
+		for(int i=0; i<array1.length+array2.length-1; i++){	// loop till all the elements are added into the array
+			if(i < array1.length)				// switch the bag you are adding from based on number of entries for this bag
+				newBag.add(array1[i]);
+			else						// adding items from bag1
+				newBag.add(array2[i]);
 		}
 
 		return newBag;
@@ -237,7 +240,8 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	public BagInterface<T> intersection(BagInterface<T> bag1){
 		ResizeableArrayBag<T> newBag = new ResizeableArrayBag<T>();
 
-		
+		T[] array1 = this.toArray();
+		T[] array2 = bag1.toArray();
 
 		return newBag;
 	}
@@ -250,7 +254,8 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	public BagInterface<T> difference(BagInterface<T> bag1){
 		ResizeableArrayBag<T> newBag = new ResizeableArrayBag<T>();
 
-
+		T[] array1 = this.toArray();
+		T[] array2 = bag1.toArray();
 
 		return newBag;
 	}
