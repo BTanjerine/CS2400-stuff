@@ -202,10 +202,9 @@ public class LinkedBag<T> implements BagInterface<T>{
 	return a new bag with elements that are similar across both bags
 	*/
 	public BagInterface<T> intersection(BagInterface<T> bag1){
-		LinkedBag<T> newBag = new LinkedBag<T>();
+		BagInterface<T> newBag = this.union(bag1);
 
-		T[] array1 = this.toArray();
-		T[] array2 = bag1.toArray();
+		
 
 		return newBag;
 	}
