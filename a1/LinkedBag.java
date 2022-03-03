@@ -9,6 +9,15 @@ public class LinkedBag<T> implements BagInterface<T>{
 	private Node<T> firstNode;
 	private int numberOfEntries;
 
+	/*
+	return: n/a
+	input: n/a 
+	constructor, set entries to 0 and define firstNode to null
+	*/
+	public LinkedBag(){
+		numberOfEntries = 0;
+		firstNode = null;
+	}
 
 	/*
 	return: integer
@@ -102,20 +111,6 @@ public class LinkedBag<T> implements BagInterface<T>{
 	}
 
 	/*
-	return: T generic
-	input: int index position
-	get the specific entry at the psoiton given in the bag
-	
-	public T getEntry(int index){
-		Node<T> currentNode = firstNode;			// start with first node
-		for(int i=0; i<index; i++){ 				// loop till we reach the correct node
-			currentNode = currentNode.getNextNode();	
-		}
-
-		return currentNode.getData();				// return that data
-	}*/
-
-	/*
 	return: integer
 	input: T generic
 	return the number similar items there are in the bag
@@ -186,11 +181,11 @@ public class LinkedBag<T> implements BagInterface<T>{
 		T[] array1 = this.toArray();
 		T[] array2 = bag1.toArray();
 
-		for(int i=0; i<array1.length+array2.length-1; i++){	// loop till all the elements are added into the array
+		for(int i=0; i<array1.length+array2.length; i++){	// loop till all the elements are added into the array
 			if(i < array1.length)				// switch the bag you are adding from based on number of entries for this bag
 				newBag.add(array1[i]);
 			else						// adding items from bag1
-				newBag.add(array2[i]);
+				newBag.add(array2[i-array1.length]);
 		}
 
 		return newBag;
@@ -202,10 +197,21 @@ public class LinkedBag<T> implements BagInterface<T>{
 	return a new bag with elements that are similar across both bags
 	*/
 	public BagInterface<T> intersection(BagInterface<T> bag1){
-		BagInterface<T> newBag = this.union(bag1);
+		LinkedBag<T> newBag = new LinkedBag<T>();
 
+		T[] array1 = this.toArray();
+		T[] array2 = bag1.toArray();
+
+		for(int i=0;i<array1.length;i++){			//compare value from both arrays and find similarities
+			for(int j=0;j<array2.length;j++){		
+				if(array1[i] == array2[j]){
+					newBag.add(array1[i]);		//put similar vlaues into new bag
+					array2[j] = null;		//disregard the number we found this pair
+					break;				//break for when there isnt an even number of similar elements
+				}
+			}
+		}
 		
-
 		return newBag;
 	}
 
@@ -216,9 +222,24 @@ public class LinkedBag<T> implements BagInterface<T>{
 	*/
 	public BagInterface<T> difference(BagInterface<T> bag1){
 		LinkedBag<T> newBag = new LinkedBag<T>();
+		boolean isSimilar = false;
 
 		T[] array1 = this.toArray();
 		T[] array2 = bag1.toArray();
+
+		for(int i=0;i<array1.length;i++){			//compare value from both arrays and find similarities
+			for(int j=0;j<array2.length;j++){		
+				if(array1[i] == array2[j]){
+					array2[j] = null;		//disregard the number we found this pair
+					isSimilar = true;
+					break;				//break for when there isnt an even number of similar elements
+				}
+			}
+			if(!isSimilar)					//make sure that intersectable values dont make it to the bag
+				newBag.add(array1[i]);
+
+			isSimilar = false;				// reset for next iteration
+		}
 
 		return newBag;
 	}

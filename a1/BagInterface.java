@@ -42,13 +42,6 @@ public interface BagInterface<T>{
 	public void clear();
 
 	/*
-	return: T generic
-	input: int index position
-	get the specific entry at the psoiton given in the bag
-	
-	public T getEntry(int index);*/
-
-	/*
 	return: integer
 	input: T generic
 	return the number similar items there are in the bag

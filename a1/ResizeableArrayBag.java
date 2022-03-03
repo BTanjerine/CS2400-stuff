@@ -8,7 +8,7 @@ bag Data Structure class array version
 */
 
 public class ResizeableArrayBag<T> implements BagInterface<T>{
-	private final T[] bag;
+	private T[] bag;
 	private int numberOfEntries;
 	private static final int DEFAULT_CAPACITY = 25;
 
@@ -76,8 +76,8 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	input: T array
 	doubles the size of the bag
 	*/
-	private T[] doubleSize(T[] oldArray){
-		return Arrays.copyOf(oldArray, oldArray.length*2);
+	private void doubleSize(T[] oldArray){
+		bag =  Arrays.copyOf(oldArray, oldArray.length*2);
 	}
 
 	/*
@@ -86,7 +86,7 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	check if the bag is full (true/false)
 	*/
 	private boolean isFull(){
-		return numberOfEntries == bag.length;
+		return (numberOfEntries >= bag.length);
 	}
 
 	/*
@@ -152,15 +152,6 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	}
 
 	/*
-	return: T generic
-	input: int index position
-	get the specific entry at the psoiton given in the bag
-	
-	public T getEntry(int index){
-		return bag[index];
-	}*/
-
-	/*
 	return: integer
 	input: T generic
 	return the number similar items there are in the bag
@@ -212,8 +203,8 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 	}
 
 	/*
-	return: resizeableArrayBagBag 
-	input: resizeableArrayBagBag
+	return: bag (of any type)
+	input: bag (of any type)
 	return a new bag with the elements of both bags combined together
 	*/
 	public BagInterface<T> union(BagInterface<T> bag1){
@@ -222,19 +213,19 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 		T[] array1 = this.toArray();
 		T[] array2 = bag1.toArray();
 
-		for(int i=0; i<array1.length+array2.length-1; i++){	// loop till all the elements are added into the array
+		for(int i=0; i<array1.length+array2.length; i++){	// loop till all the elements are added into the array
 			if(i < array1.length)				// switch the bag you are adding from based on number of entries for this bag
 				newBag.add(array1[i]);
 			else						// adding items from bag1
-				newBag.add(array2[i]);
+				newBag.add(array2[i-array1.length]);
 		}
 
 		return newBag;
 	}
 
 	/*
-	return: resizeableArrayBagBag 
-	input: resizeableArrayBagBag
+	return: bag (of any type)
+	input: bag (of any type)
 	return a new bag with elements that are similar across both bags
 	*/
 	public BagInterface<T> intersection(BagInterface<T> bag1){
@@ -243,19 +234,44 @@ public class ResizeableArrayBag<T> implements BagInterface<T>{
 		T[] array1 = this.toArray();
 		T[] array2 = bag1.toArray();
 
+		for(int i=0;i<array1.length;i++){			//compare value from both arrays and find similarities
+			for(int j=0;j<array2.length;j++){		
+				if(array1[i] == array2[j]){
+					newBag.add(array1[i]);		//put similar vlaues into new bag
+					array2[j] = null;		//disregard the number we found this pair
+					break;				//break for when there isnt an even number of similar elements
+				}
+			}
+		}
+		
 		return newBag;
 	}
 
 	/*
-	return: resizeableArrayBagBag 
-	input: resizeableArrayBagBag
+	return: bag (of any type)
+	input: bag (of any type)
 	return a new bag with similar elements from both bags subtracted
 	*/
 	public BagInterface<T> difference(BagInterface<T> bag1){
 		ResizeableArrayBag<T> newBag = new ResizeableArrayBag<T>();
+		boolean isSimilar = false;
 
 		T[] array1 = this.toArray();
 		T[] array2 = bag1.toArray();
+
+		for(int i=0;i<array1.length;i++){			//compare value from both arrays and find similarities
+			for(int j=0;j<array2.length;j++){		
+				if(array1[i] == array2[j]){
+					array2[j] = null;		//disregard the number we found this pair
+					isSimilar = true;
+					break;				//break for when there isnt an even number of similar elements
+				}
+			}
+			if(!isSimilar)					//make sure that intersectable values dont make it to the bag
+				newBag.add(array1[i]);
+
+			isSimilar = false;				// reset for next iteration
+		}
 
 		return newBag;
 	}
