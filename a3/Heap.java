@@ -12,39 +12,36 @@ public class Heap{
 
 	private int[] heapArr;
 	private int lastIndex;
+	private int numSwaps;
 
-	public Heap(){
+	public Heap(){									//constructor with default array size
 		int[] tempArray = new int[25];
 
 		lastIndex = 0;
 		heapArr = tempArray;
+		numSwaps = 0;
 	}
 
-	public Heap(int capacity){
+	public Heap(int capacity){							//constructor given capacity of array
 		int[] tempArray = new int[capacity];
 
 		lastIndex = 0;
 		heapArr = tempArray;
+		numSwaps = 0;
 	}
 
-	public Heap(int[] tempArray){ //new construction
+	public Heap(int[] tempArray){ 							//optimal construction
 		heapArr = new int[tempArray.length+1];
+		numSwaps = 0;
 
 		for(int i=0;i<tempArray.length;i++){					//place elements of array into heap
 			lastIndex++;
 			heapArr[i+1] = tempArray[i];
 		}
 
-		lastIndex = tempArray.length+1;							//set new last index
-
-		for(int j=(lastIndex/2);j > 0;j--){						//repeat reheap till heap is organized
+		for(int j=(lastIndex/2);j > 0;j--){					//repeat reheap till heap is organized
 			reheap(j);
 		}
-
-		for(int i=0; i<heapArr.length;i++){
-			System.out.println(i + ": " + heapArr[i]);			//NOT WORKING
-		}
-		
 	}
 
 	public void add(int newEntry){
@@ -57,40 +54,39 @@ public class Heap{
 
 		heapArr[lastIndex] = newEntry;							//place new entry in last position of array
 
-		int newIndex = lastIndex;								//the new entry's index
+		int newIndex = lastIndex;							//the new entry's index
 		int parentIndex = newIndex/2;							//parent of the new entry's index
 
-		while(parentIndex > 0){									//loop till the parent index reeaches to the root
+		while(parentIndex > 0){								//loop till the parent index reeaches to the root
 
-			if(heapArr[parentIndex] < heapArr[newIndex]){		//check if the new entry is bigger than its parent
+			if(heapArr[parentIndex] < heapArr[newIndex] && parentIndex > 0){	//check if the new entry is bigger than its parent
 				int temp = heapArr[parentIndex];				//swap parent and new entry if it is bigger
 				heapArr[parentIndex] = heapArr[newIndex];
 				heapArr[newIndex] = temp;
 
-				newIndex = parentIndex;							//change new and parent indexes for the next iteration
+				newIndex = parentIndex;						//change new and parent indexes for the next iteration
 				parentIndex = newIndex/2;
+				numSwaps++;
 			}
 			else{
-				break;											//exit loop if no swap is needed
+				break;								//exit loop if no swap is needed
 			}
 		}
 	}
 
 	public int removeMax(){		
-		int oldMax = -1;							//-1 represents empty 
+		int oldMax = -1;					//-1 represents empty 
 
 		if(!isEmpty()){
 			oldMax = heapArr[1];
 
 			heapArr[1] = heapArr[lastIndex];		//replace root with last entry
-			heapArr[lastIndex] = 0;
 
-			reheap(1);						//sort the tree (trickle to the leaf)
-
-			lastIndex--;							//last index value goes down
+			lastIndex--; 					// last index value goes down
+			reheap(1);					//sort the tree (trickle to the leaf)
 		}
 		
-		return oldMax;								//return 
+		return oldMax;						 
 	}
 
 	public void reheap(int entryIndex){
@@ -100,26 +96,27 @@ public class Heap{
 
 		int largestChildIndex;
 
-		while(parentIndex < lastIndex/2){								//repeat till last internal node is reached
-			rightChildIndex = (2*parentIndex)+1;
+		while(parentIndex <= lastIndex/2){								//repeat till last internal node is reached
 			leftChildIndex = 2*parentIndex;
-			largestChildIndex = heapArr[leftChildIndex];				//assume that the largest child is left for now
+			rightChildIndex = leftChildIndex + 1;
+			largestChildIndex = leftChildIndex;							//assume that the largest child is left for now
 
-			if(heapArr[leftChildIndex] > heapArr[rightChildIndex]){		//find the largest child's index
-				largestChildIndex = leftChildIndex;
-			}
-			else{
+			if(rightChildIndex <= lastIndex && heapArr[leftChildIndex] < heapArr[rightChildIndex]){	//find the largest child's index
 				largestChildIndex = rightChildIndex;
 			}
+			else{
+				largestChildIndex = leftChildIndex;
+			}
 
-			if(heapArr[parentIndex] < heapArr[largestChildIndex]){		//compare the largest child to the parent node 
+			if(heapArr[parentIndex] < heapArr[largestChildIndex]){					//compare the largest child to the parent node 
 				int temp = heapArr[parentIndex];						//swap the parent node with the largest child
 				heapArr[parentIndex] = heapArr[largestChildIndex];
 				heapArr[largestChildIndex] = temp;
 				parentIndex = largestChildIndex;						//next node to work with is the largest child
+				numSwaps++;
 			}
 			else{
-				break;													//end loop if no swaps can be done
+				break;										//end loop if no swaps can be done
 			}
 		}
 	}
@@ -129,10 +126,10 @@ public class Heap{
 	}
 
 	public boolean isEmpty(){
-		return lastIndex < 1;		//returns if the last index is past 
+		return lastIndex < 1;			//returns if the last index is past 
 	}
 
-	public int[] getHeapArray(){
+	public int[] getHeapArray(){			//copy of heap array 
 		int[] tempHeap = new int[heapArr.length];
 
 		for(int i=0; i<heapArr.length;i++){
@@ -142,12 +139,16 @@ public class Heap{
 		return tempHeap;
 	}
 
-	public boolean isFull(){
+	public boolean isFull(){			// check if array is full
 		return (getSize() >= (heapArr.length-1));
 	}
 
 	public int getSize(){
 		return lastIndex;			//size is equal to last index because 
+	}
+
+	public int getNumberSwaps(){			//return total number of swaps made when organizing heap
+		return numSwaps;
 	}
 
 	public void clear(){
