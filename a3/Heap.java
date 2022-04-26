@@ -5,6 +5,8 @@ CS 2400
 Heap data structure 
 */
 
+import java.util.Arrays;
+
 
 public class Heap{
 
@@ -26,17 +28,31 @@ public class Heap{
 	}
 
 	public Heap(int[] tempArray){ //new construction
+		heapArr = new int[tempArray.length+1];
 
-		for(int i=0; i<tempArray.length; i++){
+		for(int i=0;i<tempArray.length;i++){					//place elements of array into heap
 			lastIndex++;
-			heapArr[lastIndex] = tempArray[i];
+			heapArr[i+1] = tempArray[i];
 		}
 
-		lastIndex = 0;
-		heapArr = tempArray;
+		lastIndex = tempArray.length+1;							//set new last index
+
+		for(int j=(lastIndex/2);j > 0;j--){						//repeat reheap till heap is organized
+			reheap(j);
+		}
+
+		for(int i=0; i<heapArr.length;i++){
+			System.out.println(i + ": " + heapArr[i]);			//NOT WORKING
+		}
+		
 	}
 
 	public void add(int newEntry){
+		
+		if(isFull()){
+			heapArr = Arrays.copyOf(heapArr, 2*heapArr.length);
+		}
+
 		lastIndex++;
 
 		heapArr[lastIndex] = newEntry;							//place new entry in last position of array
@@ -60,10 +76,6 @@ public class Heap{
 		}
 	}
 
-	public void addSubTree(Heap newTree){
-
-	}
-
 	public int removeMax(){		
 		int oldMax = -1;							//-1 represents empty 
 
@@ -71,6 +83,7 @@ public class Heap{
 			oldMax = heapArr[1];
 
 			heapArr[1] = heapArr[lastIndex];		//replace root with last entry
+			heapArr[lastIndex] = 0;
 
 			reheap(1);						//sort the tree (trickle to the leaf)
 
@@ -117,6 +130,20 @@ public class Heap{
 
 	public boolean isEmpty(){
 		return lastIndex < 1;		//returns if the last index is past 
+	}
+
+	public int[] getHeapArray(){
+		int[] tempHeap = new int[heapArr.length];
+
+		for(int i=0; i<heapArr.length;i++){
+			tempHeap[i] = heapArr[i];
+		}
+
+		return tempHeap;
+	}
+
+	public boolean isFull(){
+		return (getSize() >= (heapArr.length-1));
 	}
 
 	public int getSize(){
