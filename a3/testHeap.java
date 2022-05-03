@@ -23,20 +23,18 @@ public class testHeap {
 		int[] OptimHeap;						//heap arrays
 		int[] SequentialHeap;
 
-		Heap sequential = new Heap();					//new heap for sequential construction
-
 		int i = 0; 
 		int nextVal = 0;
 		while(scn.hasNextInt()){
 			nextVal = scn.nextInt();
 			
-			sequential.add(nextVal);				//add values to heap using sequential method
 			dataArray[i] = nextVal;					//add values into array for optimal method
 
 			i++;
 		}
 		
-		Heap optimal = new Heap(dataArray);				//make another heap using optimal method
+		Heap optimal = new Heap(dataArray, 'o');				//make another heap using optimal method
+		Heap sequential = new Heap(dataArray, 's'); 					// new heap for sequential construction
 
 		OptimHeap = optimal.getHeapArray();				//get array from heap
 		SequentialHeap = sequential.getHeapArray();

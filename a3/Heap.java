@@ -30,20 +30,31 @@ public class Heap{
 		numSwaps = 0;
 	}
 
-	public Heap(int[] tempArray){ 							//optimal construction
+	/**
+	 * Contructor given an array
+	 * 2 different modes:
+	 * 	s - sequential mode: uses add method to build the heap from the array
+	 * 
+	 * 	o - optimal mode: copies contents of the array into the heap 
+	 * 	and use reheap method to organize
+	 */
+
+	public Heap(int[] tempArray, char mode){ 					
 		heapArr = new int[tempArray.length+1];
 		numSwaps = 0;
 
-		for(int i=0;i<tempArray.length;i++){					//place elements of array into heap
-			lastIndex++;
-			heapArr[i+1] = tempArray[i];
+		if(mode == 's'){
+			sequentialBuild(tempArray);
 		}
-
-		for(int j=(lastIndex/2);j > 0;j--){					//repeat reheap till heap is organized
-			reheap(j);
+		else if(mode == 'o'){
+			optimalBuild(tempArray);
+		}
+		else{
+			System.out.println("ERROR unrecognized mode: the mode you selected does not exist");
 		}
 	}
 
+	//add entries into the heap
 	public void add(int newEntry){
 		
 		if(isFull()){
@@ -74,6 +85,7 @@ public class Heap{
 		}
 	}
 
+	// remove the entry with the highest value or priority
 	public int removeMax(){		
 		int oldMax = -1;					//-1 represents empty 
 
@@ -89,6 +101,7 @@ public class Heap{
 		return oldMax;						 
 	}
 
+	//organize a subtree given its root node
 	public void reheap(int entryIndex){
 		int parentIndex = entryIndex;
 		int rightChildIndex;
@@ -118,6 +131,36 @@ public class Heap{
 			else{
 				break;										//end loop if no swaps can be done
 			}
+		}
+	}
+
+	/*
+	* Sequential build method - use add method to build the heap from an array -
+	* efficiency: O(nlog2(n))
+	* less efficient becasue of add method
+	*/
+	private void sequentialBuild(int[] tempArray){
+		for(int i=0;i<tempArray.length;i++){
+			add(tempArray[i]);		//use add method to add up all the elements into the heap
+		}
+	}
+
+	/*
+	* optimal build method - place all values in any order into heap and use reheap to organize
+	* efficiency: O(n)
+	* more efficient
+	*/
+	private void optimalBuild(int[] tempArray){
+
+		for (int i = 0; i < tempArray.length; i++)
+		{ 					// place elements of array into heap
+			lastIndex++;
+			heapArr[i + 1] = tempArray[i];
+		}
+
+		for (int j = (lastIndex / 2); j > 0; j--)
+		{ 					// repeat reheap till heap is organized
+			reheap(j);
 		}
 	}
 
