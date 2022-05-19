@@ -1,76 +1,103 @@
 /**
  * Brayden Tanji 
  * CS2400 
- * May 5, 2022 
+ * May 15, 2022 
  * Graph data structure class
  */
 
-import java.util.Arrays;
-
-
-/******************************
- * make sure to change array to arrayList array to make your life easier!!!
- */
 
 public class Graph{
-	private Node<Integer>[] EdgeList;
+	private Vertex[] vertexList;
+	private int numVertices;
 
-	public Graph()
-	{
-		@SuppressWarnings("unchecked")
-		Node<Integer>[] tempArr = (Node<Integer>[]) new Object[1];	//make a new array of nodes that hold integers
-		EdgeList = tempArr;
+	public Graph(int size){
+		vertexList = new Vertex[size];						//constructor: init veretx array
+		numVertices = 0;									//reset numbers of 
 	}
 
-	public void addNode(){						
-		Arrays.copyOf(EdgeList, EdgeList.length+1);
+	public void addVertex(String vertex){
+		if(numVertices >= vertexList.length){							//check size of the vertex list 
+			System.out.println("ERROR: cannot add anymore vertices, exceed max vertice count");
+			return;														//exit if there is no space
+		}
+		vertexList[numVertices]	= new Vertex(vertex);					//place in array
+		numVertices++;														
 	}
 
-	public void addEdge(Node<Integer> newNode){
-		EdgeList[EdgeList.length] = newNode;
+	public void addEdge(int start, int destination){
+		vertexList[start].addEdgeVertex(vertexList[destination].getData());	//add vertex to edge list 
 	}
 
-	public Node<Integer> removeNode(int nodeInt){			//when removing nodes, do we remove edges that point to it?
+	public void removeVertex(int vertexIndex){			
 
-		Node<Integer> res = EdgeList[0];
+		for(int i=0; i<vertexList.length; i++){				//find node to delete 
+			if(i == vertexIndex){
+				vertexList[i] = null;						//delete the vertex from the list of vertices
+			}
 
-		for(int i=0; i<EdgeList.length; i++){			//find node to delete 
-			if(EdgeList[i].getData() == nodeInt){
-				res = EdgeList[i];			//save node to return
-				EdgeList[i] = null;
-				break;					//break out of loop
+			removeEdge(i, vertexIndex);						//remove any edges with this node
+		}
+
+		numVertices--;	
+	}
+
+	public void removeEdge(int start, int destination){
+		if(vertexList[start].hasEdge(vertexList[destination].getData())){								//if no relationship skip
+			vertexList[start].removeEdgeVertex(vertexList[destination].getData());						//remove from list if there is 
+		}
+	}
+
+	public int getIndexOfVertex(String label){
+		int res = -1; 											//default value for when no match is found
+
+		for(int i=0; i<numVertices; i++){						//loop through every vertice to find the one we looking for
+			if(label == vertexList[i].getData()){
+				res = i;										//save index when found
 			}
 		}
 
 		return res;
 	}
 
-	public void removeEdge(Node<Integer> start, Node<Integer> destination){	
-		Node<Integer> startNode = null;
-		int nodeIndex = -1;
+	public String[] neighbors(int vertex){
+		int sizeCount = 0;
+		String[] res;
 
-		for (int i = 0; i < EdgeList.length; i++){ // find node to delete
-			if (EdgeList[i] == start){
-				nodeIndex = i;
-				startNode = EdgeList[i];
-				break; // break out of loop
+		for(int i=0;i<numVertices;i++){
+			if(isAdjacent(i, vertex)){	
+				sizeCount++;												//count up when there is an adjacent veretx
 			}
+		}
+
+		if(sizeCount > 0){													//check if there are any neihbors that exist
+			res = new String[sizeCount];									//make a new array for output
+			sizeCount = 0;
+
+			for(int j=0;j<numVertices;j++){
+				if(isAdjacent(j, vertex)){
+					res[sizeCount] = vertexList[j].getData();				//copy data that is adjacent into array 
+					sizeCount++;
+				}
+			}
+		}
+		else{
+			res = null;														//give null if there are no neighbors
 		}
 		
-		while(nodeIndex != -1){
-			if(startNode == destination){
-				startNode.setData(EdgeList[0].getData());
-
-			}	
-		}
-
-	}
-
-	public int[] neighbors(Node<Integer> node){
-		int[] res = new int[EdgeList.length];
-
-		//traversal method
 
 		return res;
+	}
+
+	public boolean exists(String vertex){	
+		boolean res = false;												//false if nothing matches
+		for(int i=0;i<numVertices;i++){										//loop through vertice list 
+			res = (vertexList[i].getData() == vertex);						//become true if vertex is found
+			if(res) break;													//break when found
+		}
+		return res;
+	}
+
+	public boolean isAdjacent(int start, int destination){
+		return (vertexList[start].hasEdge(vertexList[destination].getData()));	//check if the 2 nodes are adjacent to each other
 	}
 }
